@@ -46,4 +46,18 @@ public class SampleService {
     concertProcess.subscribe(data -> System.out.println("jitoon is " + data));
     concertProcess.subscribe(data -> System.out.println("hyunki is " + data));
   }
+
+  // 이렇게 쓰면 "stream has already been operated upon or closed" 오류 발생
+  // Stream 은 오직 한번만 소비될 수 있음. 참고 : https://hamait.tistory.com/547
+  public void ColdSequenceErrorTest() throws InterruptedException {
+
+    System.out.println("-- ColdSequenceTest --");
+
+    Flux<String> concertProcess =
+            Flux.fromStream(Stream.of("1 part", "2 part", "3 part", "4 part", "5 part"))
+                    .map(String::toUpperCase);
+
+    concertProcess.subscribe(data -> System.out.println("jitoon is " + data));
+//    concertProcess.subscribe(data -> System.out.println("hyunki is " + data)); // error
+  }
 }

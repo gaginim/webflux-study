@@ -19,8 +19,10 @@ public class WebfluxStudyApplication {
       String name = sampleService.getSample().block();
       System.out.println("name => " + name);
 
-      sampleService.HotSequenceTest();
-      sampleService.ColdSequenceTest();
+      sampleService.ColdSequenceErrorTest();
+
+//      sampleService.HotSequenceTest();
+//      sampleService.ColdSequenceTest();
     };
   }
 }
