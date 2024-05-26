@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: webflux-study
+  r2dbc:
+    url: r2dbc:mysql://tommy:password@localhost:3306/billing?tcpKeepAlive=true&useServerPrepareStatement=true&tcpNoDelay=true&ssl=false
+    pool:
+      initial-size: 10
+      max-size: 30
+      validation-query: SELECT 1
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  sql:
+    init:
+      mode: always
+

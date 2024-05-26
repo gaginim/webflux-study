@@ -19,7 +19,9 @@ public class WebfluxStudyApplication {
       String name = sampleService.getSample().block();
       System.out.println("name => " + name);
 
-      sampleService.ColdSequenceErrorTest();
+      sampleService.RepositoryTest();
+
+//      sampleService.ColdSequenceErrorTest();
 
 //      sampleService.HotSequenceTest();
 //      sampleService.ColdSequenceTest();

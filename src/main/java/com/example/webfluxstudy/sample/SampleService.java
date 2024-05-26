@@ -1,18 +1,21 @@
 package com.example.webfluxstudy.sample;
 
-import ch.qos.logback.core.util.TimeUtil;
-import io.netty.util.internal.ConstantTimeUtils;
-import org.slf4j.Logger;
+import com.example.webfluxstudy.domain.entity.User;
+import com.example.webfluxstudy.domain.repository.UserRepository;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.stream.Stream;
-
 @Service
+@RequiredArgsConstructor
 public class SampleService {
+
+  private final UserRepository userRepository;
 
   public Mono<String> getSample() {
     return Mono.just("han");
@@ -54,10 +57,22 @@ public class SampleService {
     System.out.println("-- ColdSequenceTest --");
 
     Flux<String> concertProcess =
-            Flux.fromStream(Stream.of("1 part", "2 part", "3 part", "4 part", "5 part"))
-                    .map(String::toUpperCase);
+        Flux.fromStream(Stream.of("1 part", "2 part", "3 part", "4 part", "5 part"))
+            .map(String::toUpperCase);
 
     concertProcess.subscribe(data -> System.out.println("jitoon is " + data));
-//    concertProcess.subscribe(data -> System.out.println("hyunki is " + data)); // error
+    //    concertProcess.subscribe(data -> System.out.println("hyunki is " + data)); // error
+  }
+
+  public void RepositoryTest() {
+
+    Mono<User> byId = userRepository.findById(2L);
+
+    System.out.println(byId.block().getNum());
+
+    Mono<User> saved =
+        userRepository.save(User.builder().name(UUID.randomUUID().toString()).build());
+
+    System.out.println(saved.block().getNum());
   }
 }
