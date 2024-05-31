@@ -19,7 +19,7 @@ public class R2dbcConfig {
   @Bean
   public ConnectionFactory connectionFactory() {
     String url =
-        "r2dbc:mysql://tommy:password@localhost:3306/billing?tcpKeepAlive=true&useServerPrepareStatement=true&tcpNoDelay=true&ssl=false";
+        "r2dbc:mysql://admin:password@localhost/cloud_billing_dev?tcpKeepAlive=true&useServerPrepareStatement=true&tcpNoDelay=true&ssl=false";
     return ConnectionFactories.get(url);
   }
 

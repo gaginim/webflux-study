@@ -4,12 +4,12 @@ import com.example.webfluxstudy.domain.entity.User;
 import com.example.webfluxstudy.domain.repository.UserRepository;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.function.TupleUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -64,15 +64,75 @@ public class SampleService {
     //    concertProcess.subscribe(data -> System.out.println("hyunki is " + data)); // error
   }
 
-  public void RepositoryTest() {
+  // https://d2.naver.com/helloworld/2771091
+  public Mono<String> tupleUtilsTest() {
 
-    Mono<User> byId = userRepository.findById(2L);
+    return Mono.just("tommy")
+        .flatMap(
+            t ->
+                Mono.just(t)
+                    .log()
+                    .zipWith(userRepository.findAll().map(User::getName).collectList())
+                    .log())
+        .log()
+        .flatMap(
+            TupleUtils.function(
+                (name, users) -> {
+                  System.out.println("name => " + name);
+                  users.forEach(user -> System.out.println("user memer => " + user));
+                  return Mono.just(name);
+                }))
+        .log();
+  }
 
-    System.out.println(byId.block().getNum());
+  public Flux<Integer> switchIfEmptyTest() {
+    return Flux.just(1, 2, 3)
+        .filter(i -> i > 1)
+        .doOnNext(data -> System.out.println("data => " + data))
+        .doOnError(error -> System.out.println("error => " + error.toString()))
+        .map(i -> i * i)
+        .switchIfEmpty(Mono.error(new RuntimeException("there is no data")))
+        .log();
+  }
 
-    Mono<User> saved =
-        userRepository.save(User.builder().name(UUID.randomUUID().toString()).build());
+  public Flux<Integer> switchIfEmptyTest2() {
+    return Flux.just(1, 2, 3)
+        .filterWhen(i -> getName(i).map(name -> name.startsWith("tommy")).log())
+        .map(i -> i * i)
+        .log();
+  }
 
-    System.out.println(saved.block().getNum());
+  public Mono<Boolean> mainTest() {
+    return Mono.empty()
+        .then(Mono.defer(() -> subTest2()))
+        .log()
+        .then(Mono.defer(() -> subTest3()))
+        .log()
+        .then(Mono.defer(() -> subTest4()))
+        .log();
+  }
+
+  public Mono<Boolean> subTest1() {
+    return Mono.just(Boolean.TRUE).log();
+  }
+
+  public Mono<Boolean> subTest2() {
+    return Mono.just(Boolean.TRUE).log();
+  }
+
+  public Mono<Boolean> subTest3() {
+    return Mono.error(new RuntimeException("there is no data"));
+  }
+
+  public Mono<Boolean> subTest4() {
+    return Mono.just(Boolean.TRUE).log();
+  }
+
+  public Mono<String> getName(Integer i) {
+    if (i > 1) {
+      return Mono.just("tommy_ " + i);
+    } else {
+      return Mono.just("hyunki_ " + i);
+    }
   }
 }

@@ -13,15 +13,14 @@ import org.springframework.data.relational.core.mapping.Table;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
-  @Column("num")
-  @Id private Long num;
+  @Id private Long id;
 
   @Column("name")
   private String name;
 
   @Builder
-  private User(Long num, String name) {
-    this.num = num;
+  private User(Long id, String name) {
+    this.id = id;
     this.name = name;
   }
 }

@@ -38,6 +38,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     implementation 'io.netty:netty-all'
+    implementation 'io.projectreactor.addons:reactor-extra'
+    implementation 'org.apache.commons:commons-pool2'
+
 }
 
 tasks.named('test') {
