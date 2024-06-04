@@ -23,4 +23,9 @@ public class User {
     this.id = id;
     this.name = name;
   }
+
+  public User update(String name) {
+    this.name += "," + name;
+    return this;
+  }
 }

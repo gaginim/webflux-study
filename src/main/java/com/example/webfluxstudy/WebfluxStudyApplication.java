@@ -29,14 +29,18 @@ public class WebfluxStudyApplication {
   @Bean
   public ApplicationRunner runner(SampleService sampleService) {
     return args -> {
-      String name = sampleService.getSample().block();
-      System.out.println("name => " + name);
+      //      String name = sampleService.getSample().block();
+      //      System.out.println("name => " + name);
 
       //      sampleService.tupleUtilsTest().subscribe();
 
       // sampleService.switchIfEmptyTest().subscribe();
 
-      sampleService.mainTest().subscribe();
+      //      sampleService.mainTest().subscribe();
+
+      //      sampleService.thenManyTest1().subscribe();
+
+      sampleService.isValid().subscribe();
 
       //      //      threadTest();
       //

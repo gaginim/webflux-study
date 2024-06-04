@@ -40,6 +40,7 @@ dependencies {
     implementation 'io.netty:netty-all'
     implementation 'io.projectreactor.addons:reactor-extra'
     implementation 'org.apache.commons:commons-pool2'
+    implementation "org.apache.commons:commons-lang3"
 
 }
 

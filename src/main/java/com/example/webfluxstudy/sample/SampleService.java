@@ -4,9 +4,12 @@ import com.example.webfluxstudy.domain.entity.User;
 import com.example.webfluxstudy.domain.repository.UserRepository;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.function.TupleUtils;
@@ -16,6 +19,9 @@ import reactor.function.TupleUtils;
 public class SampleService {
 
   private final UserRepository userRepository;
+
+  // delayUntil
+  // fromCallable
 
   public Mono<String> getSample() {
     return Mono.just("han");
@@ -85,6 +91,18 @@ public class SampleService {
         .log();
   }
 
+  // https://luvstudy.tistory.com/100
+  @Transactional
+  public Flux<User> thenManyTest1() {
+    return Mono.empty()
+        .then()
+        .thenMany(userRepository.findAll().log())
+        .concatMap(
+            user -> {
+              return userRepository.save(user.update(UUID.randomUUID().toString().substring(1, 4)));
+            });
+  }
+
   public Flux<Integer> switchIfEmptyTest() {
     return Flux.just(1, 2, 3)
         .filter(i -> i > 1)
@@ -95,7 +113,7 @@ public class SampleService {
         .log();
   }
 
-  public Flux<Integer> switchIfEmptyTest2() {
+  public Flux<Integer> filterWhenTest() {
     return Flux.just(1, 2, 3)
         .filterWhen(i -> getName(i).map(name -> name.startsWith("tommy")).log())
         .map(i -> i * i)
@@ -134,5 +152,13 @@ public class SampleService {
     } else {
       return Mono.just("hyunki_ " + i);
     }
+  }
+
+  public Mono<Integer> isValid() {
+    return Mono.just(5)
+        .filterWhen(num -> Mono.just(num).map(n -> BooleanUtils.negate(n.equals(5))).log())
+        .log()
+        .doOnSubscribe(data -> System.out.println("data => " + data))
+        .log();
   }
 }
